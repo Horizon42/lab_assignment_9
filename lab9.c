@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 // RecordType
 struct RecordType
@@ -11,13 +12,16 @@ struct RecordType
 // Fill out this structure
 struct HashType
 {
-
+	struct RecordType* pRecord;
+	
 };
 
 // Compute the hash function
 int hash(int x)
 {
-
+	int hCode;
+	hCode = x % 31;
+	return hCode;
 }
 
 // parses input file to an integer array
@@ -80,15 +84,34 @@ void displayRecordsInHash(struct HashType *pHashArray, int hashSz)
 	for (i=0;i<hashSz;++i)
 	{
 		// if index is occupied with any records, print all
+
+		if (pHashArray[i].pRecord != NULL) {
+            printf("Index %d -> %d, %c, %d\n", i, pHashArray[i].pRecord->id, pHashArray[i].pRecord->name, pHashArray[i].pRecord->order);
+        }
 	}
 }
 
 int main(void)
 {
-	struct RecordType *pRecords;
-	int recordSz = 0;
+	struct RecordType* pRecords;
+    struct HashType* pHashArray;
+    int recordSz = 0;
+    int hashSz = 31;
 
-	recordSz = parseData("input.txt", &pRecords);
-	printRecords(pRecords, recordSz);
-	// Your hash implementation
+    recordSz = parseData("input.txt", &pRecords);
+    printRecords(pRecords, recordSz);
+
+    // Allocate memory for the hash array
+    pHashArray = (struct HashType*)malloc(sizeof(struct HashType) * hashSz);
+    if (pHashArray == NULL)
+    {
+        printf("Cannot allocate memory\n");
+        exit(-1);
+    }
+
+    // Initialize the hash array
+    for (int i = 0; i < hashSz; ++i)
+    {
+        pHashArray[i].pRecord = NULL;
+    }
 }
